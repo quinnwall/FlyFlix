@@ -72,6 +72,9 @@
         let burstRadius = 1;
         let maxBurstRadius = 100;
         let burstSpeed = 1;
+        let burstCount = 0;
+        let maxBurstCount = 10
+        let burstColor = "#00FF00";
 
         /**
          * Socket API implementation.
@@ -193,20 +196,30 @@
                         paintoffset = offset;
                     }
                     ctx.fillRect(paintoffset, 0, barWidth, canvas.height);
-                } else {
+                } 
+                else if (maxBurstCount > burstCount){
                     offset = (offset + barWidth * barSpeed*elapsedTime) % (2*barWidth);
                     if (framecounter == 0){
                         paintoffset = offset;
                     }
+                    
                     ctx.beginPath();
-                        ctx.fillStyle = "#FFFFFF";
-                        ctx.arc(canvas.width/2, canvas.height/2, burstRadius, 0, Math.PI * 2);
-                        ctx.fill();
+                    ctx.fillStyle = burstColor;
+                    let x = canvas.width/4 + ((burstCount % 2) * (canvas.width/2));
+                    let y = canvas.height/4 + (Math.floor((burstCount % 4) / 2) * (canvas.height/2));
+                    if (burstCount % 5 == 0){
+                        x = canvas.width/2;
+                        y = canvas.height/2;
+                    }
+                    ctx.arc(x, y, burstRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                    
                 }
                 socket.emit('display', {cnt: shared_key, counter: paintoffset});
             }
-            if (burstRadius > maxBurstRadius){
+            if (burstRadius >= maxBurstRadius){
                 burstRadius = 1;
+                burstCount++;
             }
             burstRadius += burstSpeed;
             previousFrameTS = timestamp;
@@ -225,6 +238,20 @@
         }
 
         /**
+        *Inputs several bursts into bursts array
+        */
+        function updateBurstStorage(){
+            //bursts = [1,2,2,4];
+            
+            for (let i = 0; i< burstCount; i++){
+                //bursts.push([i*2*maxBurstRadius, canvas.height/2])
+                // radius
+                bursts.push(i);
+            }
+            
+        }
+
+        /**
          * Initialize canvas for drawing bars on it.
          */
         function initCanvas(){
@@ -236,6 +263,7 @@
 
             ctx = canvas.getContext("2d");
             updateBarStorage();
+            updateBurstStorage();
             window.requestAnimationFrame(drawBars);
         }
 
