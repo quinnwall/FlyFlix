@@ -48,7 +48,6 @@
         let barSpeed = 100;
 
         var gain = 1;
-        let spatialCycle = 5;
         let barWidth = 200;
         let onBarColor = "#00FF00";
         let offset = 0;
@@ -61,8 +60,6 @@
 
         let canvas; 
         let ctx;
-
-        let bars  = [];
 
         let shared_key = 0;
         let previousFrameTS;
@@ -83,11 +80,11 @@
          * `event`: Any type of message
          * `disconnect`: Disconnect the server through the socket
          * `speed`: set rotational speed
-         * `spatfreq`: 
          * `nthframe`:
          * `screen`:
         */
         socket.on('connect', function(){});
+
         socket.on('event', function(data){});
 
         socket.on('disconnect', function(){
@@ -126,7 +123,7 @@
         }
 
         function setSpeed(speed){
-            barSpeed = speed*2;
+            barSpeed = speed;
         }
 
 
@@ -137,7 +134,7 @@
          * @params {number} timestamp - current timestamp provided by 
          *     `window.requestAnimationFrame()`.
         */
-        function drawBars(timestamp) {
+        function drawBursts(timestamp) {
             if (previousFrameTS === undefined){
                 previousFrameTS = timestamp;
                 offset = 0;
@@ -151,7 +148,7 @@
                 if (showSingleBar){
                     //let updateval = (offset + canvas.width/2 * barSpeed * elapsedTime);
                     let updateval = (offset + barWidth * barSpeed * elapsedTime);
-                    offset = ( updateval + canvas.width) % canvas.width;
+                    offset = ( updateval ) % canvas.width;
 
                     if (updateval < 0 || updateval > canvas.width){
                         sweepcount = sweepcount - 1;
@@ -190,7 +187,7 @@
             }
             burstRadius += burstSpeed;
             previousFrameTS = timestamp;
-            window.requestAnimationFrame(drawBars);
+            window.requestAnimationFrame(drawBursts);
         }
 
 
@@ -205,7 +202,7 @@
             centerLine = Math.round(canvas.width/2);
 
             ctx = canvas.getContext("2d");
-            window.requestAnimationFrame(drawBars);
+            window.requestAnimationFrame(drawBursts);
         }
 
         /**
