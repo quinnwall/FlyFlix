@@ -101,8 +101,6 @@
 
         socket.on('speed', (key, speed) => {setSharedKey(key); setSpeed(speed);});
 
-        socket.on('spatfreq', data => {setSpatial(data);});
-
         socket.on('sweepcount', data => {setSweepCount(data);});
 
         socket.on('nthframe', data => {setNthFrame(data);});
@@ -131,35 +129,9 @@
             barSpeed = speed*2;
         }
 
-        /**
-         * Set the spatial frequency of the bars.
-         * 
-         * @param {number} newCycle - size of the bars. If <1, then this is the barWidth in percent
-         *     of screen width. If >1, this represents the number of bars that should be visible on
-         *     the screen.
-        */
-        function setSpatial(newCycle){
-            if(typeof(canvas) != 'undefined'){
-                if (newCycle < 1){
-                    showSingleBar = true;
-                    spatialCycle = 1;
-                    barWidth = newCycle * canvas.width;
-                    if(barSpeed < 0){
-                        offset = canvas.width - 0.001;
-                    } else {
-                        offset = 0;
-                    }
-                } else {
-                    showSingleBar = false;
-                    spatialCycle = newCycle;
-                    barWidth = (canvas.width/spatialCycle)/2;
-                }
-                updateBarStorage();
-            }
-        }
 
         /**
-         * Update the bars on canvas. This callback routine calls itself at the end to keep drawing
+         * Update the bursts on canvas. This callback routine calls itself at the end to keep drawing
          *     more frames.
          * 
          * @params {number} timestamp - current timestamp provided by 
@@ -168,15 +140,10 @@
         function drawBars(timestamp) {
             if (previousFrameTS === undefined){
                 previousFrameTS = timestamp;
-                if(barSpeed < 0){
-                    offset = canvas.width - 0.001;
-                } else {
-                    offset = 0;
-                }
+                offset = 0;
             }
             const elapsedTime = (timestamp - previousFrameTS)/1000;
 
-            ctx.fillStyle = onBarColor;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             framecounter = (framecounter + 1) % nthframe;
 
@@ -226,33 +193,9 @@
             window.requestAnimationFrame(drawBars);
         }
 
-        /**
-         * Calculate the bar size based on current values of variables `spatialCycle` and 
-         *     `barWidth`.
-        */
-        function updateBarStorage(){
-            bars = [];
-            for (let i = -1; i< spatialCycle + 1; i++){
-                bars.push([i*2*barWidth, barWidth] );
-            }
-        }
 
         /**
-        *Inputs several bursts into bursts array
-        */
-        function updateBurstStorage(){
-            //bursts = [1,2,2,4];
-            
-            for (let i = 0; i< burstCount; i++){
-                //bursts.push([i*2*maxBurstRadius, canvas.height/2])
-                // radius
-                bursts.push(i);
-            }
-            
-        }
-
-        /**
-         * Initialize canvas for drawing bars on it.
+         * Initialize canvas for drawing bursts on it.
          */
         function initCanvas(){
             canvas = document.getElementById("container");
@@ -262,8 +205,6 @@
             centerLine = Math.round(canvas.width/2);
 
             ctx = canvas.getContext("2d");
-            updateBarStorage();
-            updateBurstStorage();
             window.requestAnimationFrame(drawBars);
         }
 
