@@ -444,7 +444,7 @@ def hello():
 @app.route('/local-move/')
 def local_dev():
     _ = socketio.start_background_task(target = localmove)
-    return render_template('canvas-bars.html')
+    return render_template('bursts.html')
 
 
 def closed_loop():

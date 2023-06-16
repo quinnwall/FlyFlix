@@ -67,6 +67,11 @@
         let shared_key = 0;
         let previousFrameTS;
         let centerLine;
+        
+        let bursts = [];
+        let burstRadius = 1;
+        let maxBurstRadius = 100;
+        let burstSpeed = 1;
 
         /**
          * Socket API implementation.
@@ -193,12 +198,17 @@
                     if (framecounter == 0){
                         paintoffset = offset;
                     }
-                    bars.forEach(function(i){
-                        ctx.fillRect(paintoffset + i[0], 0, i[1], canvas.height);
-                    });
+                    ctx.beginPath();
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.arc(canvas.width/2, canvas.height/2, burstRadius, 0, Math.PI * 2);
+                        ctx.fill();
                 }
                 socket.emit('display', {cnt: shared_key, counter: paintoffset});
             }
+            if (burstRadius > maxBurstRadius){
+                burstRadius = 1;
+            }
+            burstRadius += burstSpeed;
             previousFrameTS = timestamp;
             window.requestAnimationFrame(drawBars);
         }
