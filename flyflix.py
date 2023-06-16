@@ -430,6 +430,15 @@ def hello_world():
     """
     return render_template('sounds.html')
 
+
+@app.route('/bursts/')
+def bursts():
+    """
+    Expanding circles
+    """
+    return render_template('bursts.html')
+
+
 @app.route('/fictrac/')
 def hello():
     _ = socketio.start_background_task(target = experiment)
@@ -445,6 +454,7 @@ def hello():
 def local_dev():
     _ = socketio.start_background_task(target = localmove)
     return render_template('bursts.html')
+
 
 
 def closed_loop():
