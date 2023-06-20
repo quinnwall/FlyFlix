@@ -45,7 +45,7 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 
 # socketio = SocketIO(app, async_mode='threading')
 
-@app.before_first_request
+@app.before_first_request #this has since been depricated and will not work with versions of Flask past 2.2
 def before_first_request():
     """
     Server initiator: check for paths  and initialize logger.
