@@ -67,10 +67,10 @@
         
         let bursts = [];
         let burstRadius = 1;
-        let maxBurstRadius = 100;
+        let maxBurstRadius = 150;
         let burstSpeed = 1;
         let burstCount = 0;
-        let maxBurstCount = 10
+        let maxBurstCount = 100
         let burstColor = "#00FF00";
 
         /**
@@ -184,6 +184,9 @@
             if (burstRadius >= maxBurstRadius){
                 burstRadius = 1;
                 burstCount++;
+                if (burstCount % 5 == 0){
+                    burstSpeed += 1;
+                }
             }
             burstRadius += burstSpeed;
             previousFrameTS = timestamp;
