@@ -12,7 +12,7 @@
             padding: 0 !important;
             margin: 0 !important;
             overflow: hidden;
-            background-color:#000000;
+            background-color:#00FF00;
         }
         #fullscreen, #restart{
             color:#CC0000;
@@ -67,11 +67,11 @@
         
         let bursts = [];
         let burstRadius = 1;
-        let maxBurstRadius = 150;
-        let burstSpeed = 1;
+        let maxBurstRadius = 500;
+        let burstSpeed = 0.01;
         let burstCount = 0;
         let maxBurstCount = 100
-        let burstColor = "#00FF00";
+        let burstColor = "#000000";
 
         /**
          * Socket API implementation.
@@ -183,12 +183,13 @@
             }
             if (burstRadius >= maxBurstRadius){
                 burstRadius = 1;
+                burstSpeed = 0.01;
                 burstCount++;
-                if (burstCount % 5 == 0){
-                    burstSpeed += 1;
-                }
             }
-            burstRadius += burstSpeed;
+            else{
+                burstRadius += burstSpeed;
+                burstSpeed *= 1.05;
+            }
             previousFrameTS = timestamp;
             window.requestAnimationFrame(drawBursts);
         }
