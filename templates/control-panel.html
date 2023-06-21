@@ -118,7 +118,7 @@
         (function () {
             document.getElementById('start').addEventListener('click', function () {
                  document.body.requestFullscreen();;
-                 socket.emit('start-experiment', 1);
+                 socket.emit('start-pressed', 1);
             });
             document.getElementById('stop').addEventListener('click', function () {
                 window.location.reload(true);

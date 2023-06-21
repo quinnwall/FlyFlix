@@ -361,6 +361,14 @@ def disconnect():
     print("Client disconnected", request.sid)
 
 
+@socketio.on('start-presseed')
+async def trigger_start(num):
+    print("recieved")
+    await socketio.emit('start-triggered', num)
+    #socketio.broadcast.emit('start-triggered', num)
+    #print("recieved by flyflix")
+
+
 @socketio.on('start-experiment')
 def finally_start(number):
     """
