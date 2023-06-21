@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {# control-panel.html #}
+    <meta charset="UTF-8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <script src="/static/vendor/socket.io.min.js"></script>
+    <style>
+        html,
+        body {
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+            background-color:#FFFFFF;
+        }
+        #title{
+            text-align: center;
+            font-family:Arial;
+            font-size:20pt;
+            position:absolute;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+        }
+        #start, #stop{
+            text-align: center;
+            padding: 20px;
+            font-family:Arial;
+            font-size:20pt;
+            background-color:#eeeeee;
+            position:absolute;
+            width: 20%;
+            height: 10%;
+            left: 17%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+        }
+        #start{
+            border: 1px solid #14854f;
+            color:#14854f;
+            top: 10%;
+        }
+        #stop{
+            border: 1px solid #d43839;
+            color:#d43839;
+            top: 50%;
+        }
+        #container{
+            color: #FFFFFF;
+            visibility:hidden;
+            position:absolute;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="container"></canvas>
+    <p id="title">Control Panel</p>
+    <p id="start">Start</p>
+    <p id="stop">Stop</p>
+    <script>
+        /**
+         * status variables
+        */
+        var socket = io();
+
+        var gain = 1;
+        let spatialCycle = 5;
+        let barWidth = 200;
+        let onBarColor = "#00FF00";
+        let offset = 0;
+        let paintoffset = 0;
+        let screenOn = true;
+        let showSingleBar = false;
+        let sweepcount = 0;
+        let nthframe = 1;
+        let framecounter = 0;
+
+        let canvas; 
+        let ctx;
+
+        let bars  = [];
+
+        let shared_key = 0;
+        let previousFrameTS;
+        let centerLine;
+
+        /**
+         * 
+         * 
+         * 
+         * 
+         * 
+        */
+        socket.on('connect', function(){});
+        socket.on('event', function(data){});
+
+        socket.on('disconnect', function(){
+        });
+
+
+        socket.on('screen', function(onoff){
+            if (onoff == 0){
+                screenOn = false;
+            } else {
+                screenOn = true;
+            }
+        });
+
+        /**
+         * Add event listeners for clicking fullscreen and restart buttons.
+        */
+        (function () {
+            document.getElementById('start').addEventListener('click', function () {
+                 document.body.requestFullscreen();;
+                 socket.emit('start-experiment', 1);
+            });
+            document.getElementById('stop').addEventListener('click', function () {
+                window.location.reload(true);
+            });
+        })();
+
+    </script>
+</body>
+</html>

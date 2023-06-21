@@ -446,6 +446,11 @@ def local_dev():
     _ = socketio.start_background_task(target = localmove)
     return render_template('canvas-bars.html')
 
+@app.route('/control-panel/')
+def control_panel():
+    #_ = socketio.start_background_task(target = localmove)
+    return render_template('control-panel.html')
+
 
 def closed_loop():
     """
