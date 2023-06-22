@@ -30,6 +30,9 @@ UPDATE_FICTRAC = False
 FICTRAC_GAIN = 100
 SWEEPCOUNTERREACHED = False
 
+#metadata defaults
+flyStrain = "N/A"
+
 
 Payload.max_decode_packets = 500
 
@@ -529,6 +532,7 @@ def localexperiment():
         time.sleep(0.1)
     print(time.strftime("%H:%M:%S", time.localtime()))
     log_metadata()
+    print('this works')
 
     block = []
     counter = 0
@@ -627,7 +631,7 @@ def log_metadata():
     TODO: Editing code to store information is not good. Needs to change.
     """
     metadata = {
-        "fly-strain": "DL",
+        "fly-strain": flyStrain,
         "fly-batch": "2021-03-02",
         # "day-start": "7:00:00",
         # "day-end": "19:00:00",

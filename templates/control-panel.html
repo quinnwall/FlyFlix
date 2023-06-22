@@ -73,6 +73,43 @@
     <p id="start">Start</p>
     <p id="stop">Stop</p>
     <p id="metadata">metadata</p>
+
+    <form method="POST">
+
+        <div>
+            <label for="fStrain">fly strain:</label>
+            <input type='text' id='fStrain' name='flyStrain' placeholder='enter strain' required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="fBatch">fly batch:</label>
+            <input type='text' id='fBatch' name='flyBatch' placeholder='enter batch' required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="fSex">fly sex:</label>
+            <input type='text' id='fSex' name='flySex' placeholder='enter sex of fly' required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="fSex">fly sex:</label>
+            <input type='text' id='fSex' name='flySex' placeholder='enter sex of fly' required>
+        </div>
+
+        <br>
+
+        <div>
+            <input type='submit'>
+        </div>
+
+    </form>
+
     <script>
         /**
          * status variables
@@ -132,6 +169,12 @@
                 socket.emit('stop-pressed', {})
                 window.location.reload(true);
             });
+            /**
+            document.getElementById('submit-metadata').addEventListener('click', function () {
+                let flyStrain = request.form['flyStrain']
+                socket.emit('metadata', {"flyStrain": flyStrain});
+            })
+            */
         })();
 
     </script>
