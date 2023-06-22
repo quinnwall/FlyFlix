@@ -250,6 +250,11 @@
             initCanvas();
         })
 
+        socket.on('stop-triggered', function(num){
+            document.getElementById('restart').style.visibility = "visible";
+            window.location.reload(true);
+        })
+
     </script>
 </body>
 </html>

@@ -71,8 +71,6 @@
 
         var gain = 1;
         let spatialCycle = 5;
-        let barWidth = 200;
-        let onBarColor = "#00FF00";
         let offset = 0;
         let paintoffset = 0;
         let screenOn = true;
@@ -117,10 +115,11 @@
         */
         (function () {
             document.getElementById('start').addEventListener('click', function () {
-                 document.body.requestFullscreen();;
-                 socket.emit('start-pressed', 1);
+                 //document.body.requestFullscreen();;
+                 socket.emit('start-pressed', {});
             });
             document.getElementById('stop').addEventListener('click', function () {
+                socket.emit('stop-pressed', {})
                 window.location.reload(true);
             });
         })();
