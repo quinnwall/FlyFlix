@@ -437,6 +437,16 @@ def display_event(json):
 def set_sweep_counter_reached():
     global SWEEPCOUNTERREACHED
     SWEEPCOUNTERREACHED = True
+    
+    
+@socketio.on('metadata-submit')
+def handle_data(data):
+    #TODO save these values and put them in whatever file logs metadata
+    print("fly strain: ", data[0])
+    print("fly batch: ", data[1])
+    print("fly: ", data[2])
+    print("fly sex: ", data[3])
+
 
 @app.route('/demo-sounds/')
 def hello_world():
@@ -463,6 +473,9 @@ def local_dev():
 
 @app.route('/control-panel/')
 def control_panel():
+    """
+    Control panel for experiments. Only use if you have multiple devices connected to the server.
+    """
     #_ = socketio.start_background_task(target = localmove)
     return render_template('control-panel.html')
 
@@ -663,18 +676,7 @@ def log_metadata():
         "day-end": "13:00:00",
         "tether-start": "2021-03-16 20:11:00",
 
-        # "fly": 375,
-        # "tether-end"  : "2021-03-16 20:20:00",
-        # "sex": "m",
-        # "fly": 376,
-        # "tether-end"  : "2021-03-16 20:23:00",
-        # "sex": "f",
-        # "fly": 377,
-        # "tether-end"  : "2021-03-16 20:26:00",
-        # "sex": "f",
-        # "fly": 378,
-        # "tether-end"  : "2021-03-16 20:29:00",
-        # "sex": "f",
+
         "fly": 379,
         "tether-end"  : "2021-03-16 20:32:00",
         "sex": "f",

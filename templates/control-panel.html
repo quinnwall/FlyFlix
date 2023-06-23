@@ -23,7 +23,7 @@
             margin-right: -50%;
             transform: translate(-50%, -50%);
         }
-        #start, #stop, #metadata{
+        #start, #stop{
             text-align: center;
             display:flex;
             justify-content:center;
@@ -34,7 +34,7 @@
             position:absolute;
             width: 20%;
             height: 10%;
-            left: 13%;
+            right: 45%;
             margin-right: -50%;
             transform: translate(-50%, -50%);
         }
@@ -48,12 +48,29 @@
             color:#d43839;
             top: 22%;
         }
-        #metadata{
+        #metadata, #submitButton{
+            text-align: center;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            font-family:Arial;
+            background-color:#eeeeee;
             border: 1px solid #595959;
             color:#595959;
             font-size:15pt;
-            height: 5%;
-            top: 34%;
+            padding:5px;
+            width:30%;
+            margin-top: 7%;
+            margin-left: 5%;
+        }
+        #submitButton{
+            margin-top:2%;
+        }
+        #form{
+            font-family:Arial;
+            color:#595959;
+            margin-top: 2%;
+            margin-left: 5%;
         }
         #container{
             color: #FFFFFF;
@@ -74,66 +91,53 @@
     <p id="stop">Stop</p>
     <p id="metadata">metadata</p>
 
-    <form method="POST">
+    <form method="POST" id='form'>
+
 
         <div>
             <label for="fStrain">fly strain:</label>
-            <input type='text' id='fStrain' name='flyStrain' placeholder='enter strain' required>
+            <input type='text' id='fStrain' name='flyStrain' value='N/A' required>
         </div>
 
         <br>
 
         <div>
             <label for="fBatch">fly batch:</label>
-            <input type='text' id='fBatch' name='flyBatch' placeholder='enter batch' required>
+            <input type='text' id='fBatch' name='flyBatch' value='N/A' required>
+        </div>
+
+        <br>
+
+        <div>
+            <label for="fly">fly:</label>
+            <input type='text' id='fly' name='fly' value='N/A' required>
         </div>
 
         <br>
 
         <div>
             <label for="fSex">fly sex:</label>
-            <input type='text' id='fSex' name='flySex' placeholder='enter sex of fly' required>
+            <input type='text' id='fSex' name='flySex' value='N/A' required>
         </div>
 
-        <br>
-
-        <div>
-            <label for="fSex">fly sex:</label>
-            <input type='text' id='fSex' name='flySex' placeholder='enter sex of fly' required>
-        </div>
-
-        <br>
-
-        <div>
-            <input type='submit'>
-        </div>
 
     </form>
+
+    <p id="submitButton">submit</p>
 
     <script>
         /**
          * status variables
         */
         var socket = io();
-
-        var gain = 1;
-        let spatialCycle = 5;
-        let offset = 0;
-        let paintoffset = 0;
         let screenOn = true;
-        let showSingleBar = false;
-        let sweepcount = 0;
-        let nthframe = 1;
-        let framecounter = 0;
-
-        let canvas; 
-        let ctx;
-
-        let bars  = [];
-
-        let shared_key = 0;
-        let previousFrameTS;
-        let centerLine;
+        
+        /**
+        * metadata variables
+        */
+        let flyStrain;
+        let flyBatch;
+        let flySex;
 
         /**
          * 
@@ -161,20 +165,28 @@
          * Add event listeners for clicking fullscreen and restart buttons.
         */
         (function () {
+
             document.getElementById('start').addEventListener('click', function () {
                  //document.body.requestFullscreen();;
                  socket.emit('start-pressed', {});
             });
+
             document.getElementById('stop').addEventListener('click', function () {
                 socket.emit('stop-pressed', {})
                 window.location.reload(true);
             });
-            /**
-            document.getElementById('submit-metadata').addEventListener('click', function () {
-                let flyStrain = request.form['flyStrain']
-                socket.emit('metadata', {"flyStrain": flyStrain});
-            })
-            */
+
+            document.getElementById('submitButton').addEventListener('click', function () {
+                
+                flyStrain = document.getElementById('fStrain').value;
+                flyBatch = document.getElementById('fBatch').value;
+                fly = document.getElementById('fly').value;
+                flySex = document.getElementById('fSex').value
+
+                socket.emit('metadata-submit', [flyStrain, flyBatch, fly, flySex]);
+
+            });
+           
         })();
 
     </script>
