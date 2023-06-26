@@ -30,8 +30,11 @@ UPDATE_FICTRAC = False
 FICTRAC_GAIN = 100
 SWEEPCOUNTERREACHED = False
 
-#metadata defaults
+#metadata defaults - do not change - use control panel
 flyStrain = "N/A"
+flyBatch = "N/A"
+fly = "N/A"
+flySex = "N/A"
 
 
 Payload.max_decode_packets = 500
@@ -437,15 +440,6 @@ def display_event(json):
 def set_sweep_counter_reached():
     global SWEEPCOUNTERREACHED
     SWEEPCOUNTERREACHED = True
-    
-    
-@socketio.on('metadata-submit')
-def handle_data(data):
-    #TODO save these values and put them in whatever file logs metadata
-    print("fly strain: ", data[0])
-    print("fly batch: ", data[1])
-    print("fly: ", data[2])
-    print("fly sex: ", data[3])
 
 
 @app.route('/demo-sounds/')
@@ -634,6 +628,23 @@ def local_experiment_dev():
     return render_template('three-container-bars.html')
 
 
+@socketio.on('metadata-submit')
+def handle_data(data):
+    #TODO save these values and put them in whatever file logs metadata
+    global flyStrain
+    flyStrain = data[0]
+    global flyBatch
+    flyBatch = data[1]
+    global fly
+    fly = data[2]
+    global flySex 
+    flySex = data[3]
+    print("fly strain: ", flyStrain)
+    print("fly batch: ", flyBatch)
+    print("fly: ", fly)
+    print("fly sex: ", flySex)
+
+
 def log_metadata():
     """
     The content of the `metadata` dictionary gets logged.
@@ -645,7 +656,7 @@ def log_metadata():
     """
     metadata = {
         "fly-strain": flyStrain,
-        "fly-batch": "2021-03-02",
+        "fly-batch": flyBatch,
         # "day-start": "7:00:00",
         # "day-end": "19:00:00",
         "day-night-since": "2021-02-12",
@@ -677,9 +688,9 @@ def log_metadata():
         "tether-start": "2021-03-16 20:11:00",
 
 
-        "fly": 379,
+        "fly": fly,
         "tether-end"  : "2021-03-16 20:32:00",
-        "sex": "f",
+        "sex": flySex,
 
         "ball": "1",
         "air": "wall",
@@ -695,6 +706,7 @@ def log_metadata():
     shared_key = time.time_ns()
     for key, value in metadata.items():
         logdata(0, shared_key, key, value)
+        print( key, ": ", value)
 
 
 @app.route("/")

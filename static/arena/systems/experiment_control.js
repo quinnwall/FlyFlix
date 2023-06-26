@@ -69,6 +69,8 @@ class ExperimentControl{
         addRestartButton(container);
         addStartButton(container);
     }
+
+    
 }
 
 export { ExperimentControl };
