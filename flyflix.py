@@ -657,39 +657,7 @@ def log_metadata():
     metadata = {
         "fly-strain": flyStrain,
         "fly-batch": flyBatch,
-        # "day-start": "7:00:00",
-        # "day-end": "19:00:00",
-        "day-night-since": "2021-02-12",
-
-        "birth-start": "2021-03-10 21:00:00",
-        "birth-end": "2021-03-11 20:00:00",
-
-        "starvation-start": "2021-03-16 16:50:00",
-
-        # "tether-start": "2021-03-15 17:08:00",
-        # "fly": 370,
-        # "tether-end"  : "2021-03-15 17:16:00",
-        # "sex": "f",
-        # "fly": 371,
-        # "tether-end"  : "2021-03-15 17:19:00",
-        # "sex": "m",
-        # "fly": 372,
-        # "tether-end"  : "2021-03-15 17:22:00",
-        # "sex": "m",
-        # "fly": 373,
-        # "tether-end"  : "2021-03-15 17:25:00",
-        # "sex": "m",
-        # "fly": 374,
-        # "tether-end"  : "2021-03-15 17:27:00",
-        # "sex": "m",
-
-        "day-start": "21:00:00",
-        "day-end": "13:00:00",
-        "tether-start": "2021-03-16 20:11:00",
-
-
         "fly": fly,
-        "tether-end"  : "2021-03-16 20:32:00",
         "sex": flySex,
 
         "ball": "1",
