@@ -36,8 +36,8 @@ class FullScreener{
 
         //control panel configuration
         socket.on('fullscreen-go', function(empty){
-            fullscreenButton.style.visibility = "hidden"; //<-- works
-            document.body.requestFullscreen();
+            //fullscreenButton.style.visibility = "hidden"; //<-- works
+            document.body.requestFullscreen(); // <-- doesnt
         })
 
     }
