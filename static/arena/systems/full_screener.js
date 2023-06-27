@@ -1,6 +1,8 @@
 /**
  * Module with fullscreen button
  */
+
+
 class FullScreener{
 
     /**
@@ -8,7 +10,7 @@ class FullScreener{
      * 
      * @param {Element} container - HTML element to which the fullscreen button is attached.
      */
-    constructor(container){
+    constructor(container, socket){
         const fullscreenButton = document.createElement("button");
         fullscreenButton.innerHTML = "Fullscreen";
         fullscreenButton.id = "fullscreen";
@@ -31,6 +33,13 @@ class FullScreener{
                 fullscreenButton.style.visibility = "visible";
             }
         })
+
+        //control panel configuration
+        socket.on('fullscreen-go', function(empty){
+            fullscreenButton.style.visibility = "hidden"; //<-- works
+            document.body.requestFullscreen();
+        })
+
     }
 }
 

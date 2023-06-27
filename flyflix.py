@@ -369,7 +369,6 @@ def disconnect():
 
 @socketio.on('stop-pressed')
 def trigger_stop(empty):
-    print("stop recieved")
     socketio.emit('stop-triggered', empty)
 
 @socketio.on('start-pressed')
@@ -377,6 +376,11 @@ def trigger_start(empty):
     socketio.emit('start-triggered', empty)
     #socketio.broadcast.emit('start-triggered', num)
     #print("recieved by flyflix")
+    
+@socketio.on('fullscreen-pressed')
+def trigger_fullscreen(empty):
+    print("fullscreen recieved")
+    socketio.emit('fullscreen-go', empty)
 
 
 @socketio.on('start-experiment')

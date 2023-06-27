@@ -23,7 +23,7 @@
             margin-right: -50%;
             transform: translate(-50%, -50%);
         }
-        #start, #stop{
+        #start, #stop, #fullscreen{
             text-align: center;
             display:flex;
             justify-content:center;
@@ -47,6 +47,11 @@
             border: 1px solid #d43839;
             color:#d43839;
             top: 22%;
+        }
+        #fullscreen{
+            border: 1px solid #345eeb;
+            color:#345eeb;
+            top: 34%;
         }
         #metadata, #submitButton{
             text-align: center;
@@ -89,6 +94,7 @@
     <p id="title">Control Panel</p>
     <p id="start">Start</p>
     <p id="stop">Stop</p>
+    <p id="fullscreen">Fullscreen</p>
     <p id="metadata">metadata</p>
 
     <form method="POST" id='form'>
@@ -172,8 +178,11 @@
             });
 
             document.getElementById('stop').addEventListener('click', function () {
-                socket.emit('stop-pressed', {})
-                window.location.reload(true);
+                socket.emit('stop-pressed', {});
+            });
+
+            document.getElementById('fullscreen').addEventListener('click', function () {
+                socket.emit('fullscreen-pressed', {});
             });
 
             document.getElementById('submitButton').addEventListener('click', function () {
@@ -181,7 +190,7 @@
                 flyStrain = document.getElementById('fStrain').value;
                 flyBatch = document.getElementById('fBatch').value;
                 fly = document.getElementById('fly').value;
-                flySex = document.getElementById('fSex').value
+                flySex = document.getElementById('fSex').value;
 
                 socket.emit('metadata-submit', [flyStrain, flyBatch, fly, flySex]);
 

@@ -16,7 +16,7 @@ function main() {
   
     const arena = new Arena(container);
 
-    const fullScreenButton = new FullScreener(container);
+    const fullScreenButton = new FullScreener(container, socket);
     const experimentController = new ExperimentControl(container, socket);
   
     arena.start();
