@@ -13,6 +13,8 @@ from logging import FileHandler
 
 import eventlet
 
+import json
+
 from flask import Flask, render_template, request, abort, url_for
 from flask.logging import default_handler
 from flask_socketio import SocketIO
@@ -35,6 +37,7 @@ flyStrain = "N/A"
 flyBatch = "N/A"
 fly = "N/A"
 flySex = "N/A"
+metadata = {}
 
 
 Payload.max_decode_packets = 500
@@ -635,46 +638,22 @@ def local_experiment_dev():
 @socketio.on('metadata-submit')
 def handle_data(data):
     #TODO save these values and put them in whatever file logs metadata
-    global flyStrain
-    flyStrain = data[0]
-    global flyBatch
-    flyBatch = data[1]
-    global fly
-    fly = data[2]
-    global flySex 
-    flySex = data[3]
-    print("fly strain: ", flyStrain)
-    print("fly batch: ", flyBatch)
-    print("fly: ", fly)
-    print("fly sex: ", flySex)
+    metadata_string = json.dumps(data)
+    print(metadata_string)
+    global metadata
+    metadata = json.loads(metadata_string)
+    print(metadata)
+    
 
 
 def log_metadata():
     """
-    The content of the `metadata` dictionary gets logged.
+    The content of the `metadata` dictionary gets logged and printed
     
-    This is a rudimentary way to save information related to the experiment to a file. Edit the 
-    content of the dictionary for each experiment.
+    This is a rudimentary way to save information related to the experiment to a file.
 
-    TODO: Editing code to store information is not good. Needs to change.
     """
-    metadata = {
-        "fly-strain": flyStrain,
-        "fly-batch": flyBatch,
-        "fly": fly,
-        "sex": flySex,
-
-        "ball": "1",
-        "air": "wall",
-        "glue": "KOA",
-        
-        "temperature": 32,
-        "distance": 35,
-        "protocol": 12,
-        "screen-brightness": 100,
-        "display": "fire",
-        "color": "#FFFFFF",
-    }
+    
     shared_key = time.time_ns()
     for key, value in metadata.items():
         logdata(0, shared_key, key, value)
