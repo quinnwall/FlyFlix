@@ -22,11 +22,12 @@ class FullScreener{
         fullscreenButton.style.left = "5%";
         container.appendChild(fullscreenButton);
         
+
         fullscreenButton.addEventListener('click', () =>{
             document.body.requestFullscreen();
         });
 
-
+        
         window.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement){
                 fullscreenButton.style.visibility = "hidden";
@@ -34,6 +35,7 @@ class FullScreener{
                 fullscreenButton.style.visibility = "visible";
             }
         })
+
 
         //control panel configuration
         /*

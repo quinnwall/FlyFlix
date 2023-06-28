@@ -23,7 +23,7 @@
             margin-right: -50%;
             transform: translate(-50%, -50%);
         }
-        #start, #stop{
+        #start, #restart, #stop{
             text-align: center;
             display:flex;
             justify-content:center;
@@ -32,21 +32,22 @@
             font-size:20pt;
             background-color:#eeeeee;
             position:absolute;
-            width: 20%;
-            height: 10%;
-            right: 45%;
-            margin-right: -50%;
-            transform: translate(-50%, -50%);
+            width: 30%;
+            height: 20%;
+            right: 5%;
+            top: 4%;
         }
-        #start{
+        #start, #restart{
             border: 1px solid #14854f;
             color:#14854f;
-            top: 10%;
+        }
+        #restart{
+            visibility:hidden;
         }
         #stop{
+            visibility:hidden;
             border: 1px solid #d43839;
             color:#d43839;
-            top: 22%;
         }
         #metadata, #submitButton{
             text-align: center;
@@ -88,8 +89,8 @@
     <canvas id="container"></canvas>
     <p id="title">Control Panel</p>
     <p id="start">Start</p>
+    <p id="restart">Restart</p>
     <p id="stop">Stop</p>
-    <p id="fullscreen">Fullscreen</p>
     <p id="metadata">metadata</p>
 
     <form method="POST" id='form'>
@@ -170,10 +171,20 @@
             document.getElementById('start').addEventListener('click', function () {
                  //document.body.requestFullscreen();;
                  socket.emit('start-pressed', {});
+                 document.getElementById('start').style.visibility = 'hidden';
+                 document.getElementById('stop').style.visibility = 'visible';
             });
 
             document.getElementById('stop').addEventListener('click', function () {
                 socket.emit('stop-pressed', {});
+                document.getElementById('stop').style.visibility = 'hidden';
+                document.getElementById('restart').style.visibility = 'visible';
+            });
+
+            document.getElementById('restart').addEventListener('click', function () {
+                socket.emit('restart-pressed', {});
+                document.getElementById('restart').style.visibility = 'hidden';
+                document.getElementById('start').style.visibility = 'visible';
             });
 
 

@@ -70,7 +70,7 @@ class ExperimentControl{
         addRestartButton(container);
         addStartButton(container);
 
-        // socket stuff here?
+        // socket configuration for control panel buttons
         socket.on('start-triggered', function(empty){
             const controllers = container.getElementsByClassName('experiment-controller');
             for (const element of controllers) {
@@ -78,6 +78,10 @@ class ExperimentControl{
             }
             const startEvent = new Event('start-experiment');
             window.dispatchEvent(startEvent);
+        })
+
+        socket.on('restart-triggered', function(empty){
+            window.location.reload();
         })
 
         socket.on('stop-triggered', function(empty){

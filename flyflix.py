@@ -376,6 +376,10 @@ def trigger_start(empty):
     socketio.emit('start-triggered', empty)
     #socketio.broadcast.emit('start-triggered', num)
     #print("recieved by flyflix")
+
+@socketio.on('restart-pressed')
+def trigger_restart(empty):
+    socketio.emit('restart-triggered', empty)
     
 
 
