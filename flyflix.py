@@ -546,7 +546,6 @@ def localexperiment():
         time.sleep(0.1)
     print(time.strftime("%H:%M:%S", time.localtime()))
     log_metadata()
-    print('this works')
 
     block = []
     counter = 0
@@ -637,7 +636,11 @@ def local_experiment_dev():
 
 @socketio.on('metadata-submit')
 def handle_data(data):
-    #TODO save these values and put them in whatever file logs metadata
+    """
+    Triggered when metadata is submitted via the control panel
+    takes the javascript objects and converts it to a python dictionary
+    stores the dictionary in the metadata variable that is used in log_metadata()
+    """
     metadata_string = json.dumps(data)
     print(metadata_string)
     global metadata
