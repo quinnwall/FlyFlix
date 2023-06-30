@@ -179,6 +179,10 @@ def display_event(json):
 @socketio.on('stop-pressed')
 def trigger_stop(empty):
     socketio.emit('stop-triggered', empty)
+    print("Stopped")
+    global start
+    start = False
+
 
 @socketio.on('start-pressed')
 def trigger_start(empty):
@@ -231,7 +235,6 @@ def cshlfly22():
     gains = [0.9, 1, 1.1]
     counter = 0
     gaincount = 0
-    log_metadata()
 
     ## rotation 
     for alpha in [15]:
@@ -253,6 +256,8 @@ def cshlfly22():
                     block.append(t)
                     counter += 1
 
+                    
+
     # Oscillation
     for alpha in [15]:
         for freq in [0.333]:
@@ -272,6 +277,8 @@ def cshlfly22():
                         comment=f"Oscillation with frequency {freq} direction {direction} brightness {bright} contrast {contrast}")
                     block.append(t)
                     counter += 1
+
+                    
 
     # Small object
     for alpha in [10]:
@@ -294,12 +301,12 @@ def cshlfly22():
                     block.append(t)
                     counter += 1
 
-    
 
     while not start:
         time.sleep(0.1)
     global RUN_FICTRAC
     RUN_FICTRAC = True
+    log_metadata()
     _ = socketio.start_background_task(target = log_fictrac_timestamp)
 
     repetitions = 3
@@ -359,6 +366,7 @@ def log_metadata():
     shared_key = time.time_ns()
     for key, value in metadata.items():
         logdata(1, 0, shared_key, key, value)
+        print(key, ": ", value)
 
 
 @app.route("/")

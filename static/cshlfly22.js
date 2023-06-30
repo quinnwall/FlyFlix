@@ -19,13 +19,18 @@ function main() {
 
     const fullScreenButton = new FullScreener(container);
     const experimentController = new ExperimentControl(container, socket);
-  
+    
     arena.start();
 
     socket.on('stop-triggered', function(empty){
       arena.stop();
     })
-    
+
+    socket.on('restart-freeze', function(empty){
+      arena.stop();
+    })
+
+
   }
 
 main();

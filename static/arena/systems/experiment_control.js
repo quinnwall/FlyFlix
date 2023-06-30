@@ -87,6 +87,7 @@ class ExperimentControl{
 
         socket.on('restart-triggered', function(empty){
             window.location.reload();
+            socket.emit("restart-freeze")
         })
 
         socket.on('stop-triggered', function(empty){
