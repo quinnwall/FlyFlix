@@ -61,7 +61,7 @@ class ExperimentControl{
      * @constructor
      * @param {Element} container - HTML element to which the start and restart button attaches
      */
-    constructor(container, add_start=true){
+    constructor(container, socket, add_start=true){
         addRestartButton(container);
         if (add_start){
             addStartButton(container);
@@ -74,6 +74,28 @@ class ExperimentControl{
                 element.style.visibility = "hidden";
             }
         })
+
+        // socket configuration for control panel buttons
+        socket.on('start-triggered', function(empty){
+            const controllers = container.getElementsByClassName('experiment-controller');
+            for (const element of controllers) {
+                element.style.visibility = "hidden";
+            }
+            const startEvent = new Event('start-experiment');
+            window.dispatchEvent(startEvent);
+        })
+
+        socket.on('restart-triggered', function(empty){
+            window.location.reload();
+            socket.emit("restart-freeze")
+        })
+
+        socket.on('stop-triggered', function(empty){
+            const stopEvent = new Event('end-experiment');
+            window.dispatchEvent(stopEvent);
+            //window.location.reload();
+        })
+        
     }
 }
 
