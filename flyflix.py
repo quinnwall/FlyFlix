@@ -22,6 +22,8 @@ from jinja2 import TemplateNotFound
 
 from engineio.payload import Payload
 
+import json
+
 from Experiment import SpatialTemporal, Duration, OpenLoopCondition, SweepCondition, ClosedLoopCondition, Trial, CsvFormatter
 
 app = Flask(__name__)
@@ -29,9 +31,11 @@ app = Flask(__name__)
 start = False
 SWEEPCOUNTERREACHED = False
 RUN_FICTRAC = False
+metadata = {}
 
 
 Payload.max_decode_packets = 500
+
 
 # Using eventlet breaks UDP reading thread unless patched. 
 # See http://eventlet.net/doc/basic_usage.html?highlight=monkey_patch#patching-functions for more.
@@ -168,6 +172,25 @@ def data_logger(client_timestamp, request_timestamp, key, value):
 @socketio.on('display')
 def display_event(json):
     savedata(request.sid, json['cnt'], "display-offset", json['counter'])
+    
+
+@socketio.on('stop-pressed')
+def trigger_stop(empty):
+    socketio.emit('stop-triggered', empty)
+    print("Stopped")
+    global start
+    start = False
+
+
+@socketio.on('start-pressed')
+def trigger_start(empty):
+    socketio.emit('start-triggered', empty)
+    #socketio.broadcast.emit('start-triggered', num)
+    #print("recieved by flyflix")
+
+@socketio.on('restart-pressed')
+def trigger_restart(empty):
+    socketio.emit('restart-triggered', empty)
 
 
 @app.route('/demo-sounds/')
@@ -358,7 +381,7 @@ def l4l5left():
     gains = [0.9, 1, 1.1]
     counter = 0
     gaincount = 0
-    log_metadata()
+    
 
     ## rotation 
     for alpha in [15, 45]:
@@ -422,6 +445,7 @@ def l4l5left():
 
     while not start:
         time.sleep(0.1)
+    log_metadata()
     global RUN_FICTRAC
     RUN_FICTRAC = True
     _ = socketio.start_background_task(target = log_fictrac_timestamp)
@@ -438,6 +462,8 @@ def l4l5left():
             print(f"Condition {counter} of {len(block*repetitions)}")
             current_trial.set_id(counter)
             current_trial.trigger(socketio)
+            if not start:
+                return
 
     RUN_FICTRAC = False
     print(time.strftime("%H:%M:%S", time.localtime()))
@@ -469,49 +495,42 @@ def local_experiment_dev():
     return render_template('three-container-bars.html')
 
 
+
+@app.route('/control-panel/')
+def control_panel():
+    """
+    Control panel for experiments. Only use if you have multiple devices connected to the server.
+    """
+    #_ = socketio.start_background_task(target = localmove)
+    return render_template('control-panel.html')
+
+
+@socketio.on('metadata-submit')
+def handle_data(data):
+    """
+    Triggered when metadata is submitted via the control panel
+    takes the javascript objects and converts it to a python dictionary
+    stores the dictionary in the metadata variable that is used in log_metadata()
+    """
+    metadata_string = json.dumps(data)
+    print(metadata_string)
+    global metadata
+    metadata = json.loads(metadata_string)
+    print(metadata)
+    
+    
 def log_metadata():
     """
     The content of the `metadata` dictionary gets logged.
     
     This is a rudimentary way to save information related to the experiment to a file. Edit the 
     content of the dictionary for each experiment.
-
-    TODO: Editing code to store information is not good. Needs to change.
+    
     """
-    metadata = {
-        "fly-strain": "ctr-merry-Ri",
-        "fly-batch": "x3",
-        "day-night-since": "2022-04-05",
-
-        "birth-start": "2022-04-16 16:30:00",
-        "birth-end": "2022-04-17 13:30:00",
-
-        "starvation-start": "2022-04-19 12:09:00",
-
-        "tether-start": "2022-04-19 16:28:00",
-        "fly": 7,
-        "tether-end"  : "2022-04-19 16:41:00",
-        "sex": "f",
-        
-        "day-start": "1:00:00",
-        "day-end": "17:00:00",
-        
-
-        "ball": "25",
-        "air": "wall",
-        "glue": "KOA",
-        
-        "temperature": 32,
-        "distance": 35,
-        "protocol": 3,
-        "screen-brightness": 67,
-        "display": "fire",
-        "color": "#00FF00",
-        "filter": "trace-paper",
-    }
     shared_key = time.time_ns()
     for key, value in metadata.items():
         logdata(1, 0, shared_key, key, value)
+        print( key, ": ", value)
 
 
 @app.route("/")
