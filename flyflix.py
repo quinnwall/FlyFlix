@@ -23,6 +23,7 @@ from jinja2 import TemplateNotFound
 from engineio.payload import Payload
 
 import json
+import yaml
 
 from Experiment import SpatialTemporal, Duration, OpenLoopCondition, SweepCondition, ClosedLoopCondition, Trial, CsvFormatter
 
@@ -34,7 +35,19 @@ RUN_FICTRAC = False
 metadata = {}
 
 
-Payload.max_decode_packets = 500
+Payload.max_decode_packets = 1500
+
+# metadata variable - DO NOT CHANGE
+# use control panel to update values or defaultsconfig.yaml to set defaults
+metadata = {}
+
+# read in defaults from defaultsconfig.yaml
+with open("defaultsconfig.yaml", "r") as stream:
+    try:
+        metadata = yaml.safe_load(stream)
+        print(metadata)
+    except yaml.YAMLError as exc:
+        print(exc)
 
 
 # Using eventlet breaks UDP reading thread unless patched. 
@@ -502,7 +515,7 @@ def control_panel():
     Control panel for experiments. Only use if you have multiple devices connected to the server.
     """
     #_ = socketio.start_background_task(target = localmove)
-    return render_template('control-panel.html')
+    return render_template('control-panel.html', metadata=json.dumps(metadata))
 
 
 @socketio.on('metadata-submit')
@@ -515,7 +528,7 @@ def handle_data(data):
     metadata_string = json.dumps(data)
     print(metadata_string)
     global metadata
-    metadata = json.loads(metadata_string)
+    metadata.update(json.loads(metadata_string))
     print(metadata)
     
     
