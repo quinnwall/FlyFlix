@@ -7,6 +7,7 @@ import logging
 import random
 import inspect
 import warnings
+from threading import Lock
 
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -24,6 +25,7 @@ from engineio.payload import Payload
 
 import json
 import yaml
+import datetime
 
 from Experiment import SpatialTemporal, Duration, OpenLoopCondition, SweepCondition, ClosedLoopCondition, Trial, CsvFormatter
 
@@ -40,14 +42,7 @@ Payload.max_decode_packets = 1500
 # metadata variable - DO NOT CHANGE
 # use control panel to update values or defaultsconfig.yaml to set defaults
 metadata = {}
-
-# read in defaults from defaultsconfig.yaml
-with open("defaultsconfig.yaml", "r") as stream:
-    try:
-        metadata = yaml.safe_load(stream)
-        print(metadata)
-    except yaml.YAMLError as exc:
-        print(exc)
+metadata_lock = Lock()
 
 
 # Using eventlet breaks UDP reading thread unless patched. 
@@ -62,7 +57,56 @@ socketio = SocketIO(app, cors_allowed_origins='*')
 
 # socketio = SocketIO(app, async_mode='threading')
 
-@app.before_first_request
+def read_metadata():
+    """
+    read metadata values from a config file
+    """
+    global metadata
+    # read in defaults from defaultsconfig.yaml
+    with open("defaultsconfig.yaml", "r") as stream:
+        try:
+            with metadata_lock:
+                filedata = yaml.safe_load(stream)
+                metadata = data_as_string(filedata)
+            print(metadata)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+
+def data_as_string(dict):
+    """
+    reformats the data so that dates are saved as strings in ISO format
+    
+    { delKey } - list of keys in metadata that need to be deleted
+    { f_pairs } - dictionary with reformatted keys that needs to replace old keys
+    
+    """
+    delKey = []
+    f_pairs = {}
+    for key in dict:
+        val = dict[key]
+        key_type = type(key)
+        val_type = type(dict[key])
+        if (val_type == datetime.date or val_type == datetime.datetime or val_type == datetime.time):
+            val = val.isoformat()
+            dict[key] = val
+        elif (val == None):
+            dict[key] = ""
+        if (key_type == datetime.date or key_type == datetime.datetime or key_type == datetime.time):
+            key_f = key.isoformat()
+            f_pairs[key_f] = val
+            delKey.append(key)
+    
+    #deletes all keys in datetime format
+    for key in delKey:
+        del dict[key]
+        
+    #adds keys that were reformatted to ISO
+    dict.update(f_pairs)
+    
+    return dict
+
+
 def before_first_request():
     """
     Server initiator: check for paths  and initialize logger.
@@ -79,6 +123,7 @@ def before_first_request():
             raise Exception("'data' exists as a file, but we need to create a directory with that name to log data")
     else:
         data_path.mkdir()
+    read_metadata()
     csv_handler = FileHandler("data/repeater_{}.csv".format(time.strftime("%Y%m%d_%H%M%S")))
     csv_handler.setFormatter(CsvFormatter())
     app.logger.removeHandler(default_handler)
@@ -383,9 +428,12 @@ def localexperiment():
         block = random.sample(block, k=len(block))
         for current_trial in block:
             counter = counter + 1
-            print(f"Condition {counter} of {len(block*repetitions)}")
+            progress = f"Condition {counter} of {len(block*repetitions)}"
+            print(progress)
+            socketio.emit("condition-update", progress)
             current_trial.set_id(counter)
             current_trial.trigger(socketio)
+    socketio.emit("condition-update", "Completed")
     print(time.strftime("%H:%M:%S", time.localtime()))
 
 def l4l5left():
@@ -472,13 +520,16 @@ def l4l5left():
         block = random.sample(block, k=len(block))
         for current_trial in block:
             counter = counter + 1
-            print(f"Condition {counter} of {len(block*repetitions)}")
+            progress = f"Condition {counter} of {len(block*repetitions)}"
+            print(progress)
+            socketio.emit("condition-update", progress)
             current_trial.set_id(counter)
             current_trial.trigger(socketio)
             if not start:
                 return
 
     RUN_FICTRAC = False
+    socketio.emit("condition-update", "Completed")
     print(time.strftime("%H:%M:%S", time.localtime()))
 
 def l4l5right():
@@ -560,4 +611,5 @@ def sitemap():
 
 
 if __name__ == '__main__':
+    before_first_request()
     socketio.run(app, host='0.0.0.0', port = 17000)
