@@ -39,7 +39,7 @@
             width: 50%;
         }
 
-        #start, #restart, #stop, #metadata, #submitButton{
+        #start, #restart, #stop, #metadata{
             text-align: center;
             display:flex;
             justify-content:center;
@@ -49,7 +49,7 @@
             margin-left: 3%;
             margin-top: 0%;
         }
-        #metadata, #submitButton{
+        #metadata{
             border: 2px solid #1c4587;
             color:#1c4587;
             font-size:12pt;
@@ -126,14 +126,6 @@
             <div id="leftBox">
                 <p id="metadata">metadata</p>
                 <form method="POST" id='form'></form>
-                <script>
-                    var x ="";
-                    for (let h=0; h<18; h++){
-                        x = x + `<div id="row"><input type='text' id='key${h}' placeholder='N/A' >`;
-                        x = x + `<input type='text' id='value${h}' placeholder='N/A' > </div>`;
-                    }
-                    document.getElementById("form").innerHTML = x;
-                </script>
             </div>
 
             <div id="rightBox">
@@ -206,28 +198,47 @@
         
         })();
 
+        // form set up
         //reads in metadata and prefills it in the metadata inputs
         var intakeData = {{ metadata|tojson }};
         var configData = JSON.parse(intakeData);
-        let count = 0;
-        for (let k in configData){
-            let strKey = "key" + count;
-            let strVal = "value" + count;
-            document.getElementById(strKey).value = k;
-            document.getElementById(strVal).value = configData[k];
-            if (configData[k] == ""){
-                document.getElementById(strKey).style.backgroundColor = "#ffd9d9";
-                document.getElementById(strVal).style.backgroundColor = "#ffd9d9";
-            }
-            count++;
+        function inputs_setup(inputCount){
 
-            //prevents the loop from continuing past 18 (the amount of input boxes)
-            if (count >= 18){
-                break;
+            var x ="";
+            for (let h=0; h<inputCount; h++){
+            x = x + `<div id="row"><input type='text' id='key${h}' placeholder='N/A' >`;
+            x = x + `<input type='text' id='value${h}' placeholder='N/A' > </div>`;
             }
+            document.getElementById("form").innerHTML += x;
+
+
         }
-    
+        inputs_setup(Object.keys(configData).length + 5);
+        
+        (function () {
+            let count = 0;
+            for (let k in configData){
+                let strKey = "key" + count;
+                let strVal = "value" + count;
+                document.getElementById(strKey).value = k;
+                document.getElementById(strVal).value = configData[k];
+                if (configData[k] == ""){
+                    document.getElementById(strVal).style.backgroundColor = "#ffd9d9";
+                }
+                count++;
+                
+                //listeners to change colors
+                document.getElementById(strKey).addEventListener("input", function(){
+                    this.style.backgroundColor = !!this.value ? "#ffffff": "#ffd9d9";
+                })
+                document.getElementById(strVal).addEventListener("input", function(){
+                    this.style.backgroundColor = !!this.value ? "#ffffff": "#ffd9d9";
+                })
+            }
 
+        })();
+
+    
 
         //updates the progress as the experiment is completed
         socket.on('condition-update', function(progress){
