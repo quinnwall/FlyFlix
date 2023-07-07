@@ -247,6 +247,7 @@ def trigger_start(empty):
 @socketio.on('restart-pressed')
 def trigger_restart(empty):
     socketio.emit('restart-triggered', empty)
+    socketio.emit('condition-update', "Once the experiment is started, status will be shown here.")
 
 
 def log_fictrac_timestamp():
@@ -367,13 +368,14 @@ def cshlfly22():
         block = random.sample(block, k=len(block))
         for current_trial in block:
             counter = counter + 1
+            if not start:
+                socketio.emit("condition-update", f"Stopped at condition {counter} of {len(block*repetitions)}")
+                return
             progress = f"Condition {counter} of {len(block*repetitions)}"
-            print(progress)
+            print(progress) 
             socketio.emit("condition-update", progress)
             current_trial.set_id(counter)
             current_trial.trigger(socketio)
-            if not start:
-                return
 
     RUN_FICTRAC = False
     socketio.emit("condition-update", "Completed")
