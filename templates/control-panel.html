@@ -115,7 +115,7 @@
                 <br>
                 1. Ensure that your experiment is completely set up (including navigating to the experiment page and selecting fullscreen)
                 <br>
-                2. Enter any information that you want to store about the trial in the metadata as a key-value pair and click submit.
+                2. Enter any information that you want to store about the trial in the metadata as a key-value pair (saved when you click start).
             </p>
             <p id="status">
                 Once the experiment is started, status will be shown here.
@@ -134,7 +134,6 @@
                     }
                     document.getElementById("form").innerHTML = x;
                 </script>
-                <button id="submitButton" type="button">submit</button>
             </div>
 
             <div id="rightBox">
@@ -175,10 +174,21 @@
         (function () {
 
             document.getElementById('start').addEventListener('click', function () {
-                 //document.body.requestFullscreen();;
-                 socket.emit('start-pressed', {});
-                 document.getElementById('start').style.visibility = 'hidden';
-                 document.getElementById('stop').style.visibility = 'visible';
+                //document.body.requestFullscreen();;
+                //metadata dictionary
+                var data = {};
+                for (i = 0; i < 18; i++){
+                    let keyStr = "key" + i;
+                    let valStr = "value" + i;
+                    let key = document.getElementById(keyStr).value;
+                    if ( key != ""){
+                        data[key] = document.getElementById(valStr).value;
+                    }
+                }
+                socket.emit('metadata-submit', data);
+                socket.emit('start-pressed', {});
+                document.getElementById('start').style.visibility = 'hidden';
+                document.getElementById('stop').style.visibility = 'visible';
             });
 
             document.getElementById('stop').addEventListener('click', function () {
@@ -193,19 +203,7 @@
                 document.getElementById('start').style.visibility = 'visible';
             });
 
-            document.getElementById('submitButton').addEventListener('click', function () {
-                //metadata dictionary
-                var data = {};
-                for (i = 0; i < 18; i++){
-                    let keyStr = "key" + i;
-                    let valStr = "value" + i;
-                    let key = document.getElementById(keyStr).value;
-                    if ( key != ""){
-                        data[key] = document.getElementById(valStr).value;
-                    }
-                }
-                socket.emit('metadata-submit', data);
-            });
+        
         })();
 
         //reads in metadata and prefills it in the metadata inputs
