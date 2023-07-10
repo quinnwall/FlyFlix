@@ -39,7 +39,7 @@
             width: 50%;
         }
 
-        #start, #restart, #stop, #metadata{
+        #start, #restart, #stop, #metadata, #addRow{
             text-align: center;
             display:flex;
             justify-content:center;
@@ -49,7 +49,7 @@
             margin-left: 3%;
             margin-top: 0%;
         }
-        #metadata{
+        #metadata, #addRow{
             border: 2px solid #1c4587;
             color:#1c4587;
             font-size:12pt;
@@ -126,6 +126,7 @@
             <div id="leftBox">
                 <p id="metadata">metadata</p>
                 <form method="POST" id='form'></form>
+                <p id="addRow">+</p>
             </div>
 
             <div id="rightBox">
@@ -145,6 +146,8 @@
         var socket = io();
         let screenOn = true;
 
+        // variable to keep track of how many rows of metadata inputs there .addEventListener
+        // should not be changed from 0 until start
         let inputRows = 0;
 
         socket.on('connect', function(){});
@@ -180,7 +183,7 @@
 
 
         /**
-         * Add event listeners for clicking start buttons.
+         * Add event listeners for buttons
         */
         (function () {
 
@@ -204,6 +207,10 @@
                 document.getElementById('start').style.visibility = 'visible';
             });
 
+            document.getElementById('addRow').addEventListener('click', function () {
+                addInputRow();
+            })
+
         
         })();
 
@@ -224,7 +231,7 @@
 
 
         }
-        inputs_setup(Object.keys(configData).length + 5);
+        inputs_setup(Object.keys(configData).length + 1);
         
         (function () {
             let count = 0;
@@ -248,6 +255,16 @@
             }
 
         })();
+
+        /**
+        * function to add an additional row to the metadata inputs
+        */
+        function addInputRow(){
+            inputRows++;
+            let rowCode = `<div id="row"><input type='text' id='key${inputRows}' placeholder='N/A' ><input type='text' id='value${inputRows}' placeholder='N/A' > </div>`;
+            document.getElementById('form').insertAdjacentHTML('beforeend', rowCode);
+        }
+
 
         //updates the progress as the experiment is completed
         socket.on('condition-update', function(progress){
