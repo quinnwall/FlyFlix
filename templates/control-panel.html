@@ -145,6 +145,8 @@
         var socket = io();
         let screenOn = true;
 
+        let inputRows = 0;
+
         socket.on('connect', function(){});
         socket.on('event', function(data){});
 
@@ -159,7 +161,6 @@
             }
         });
 
-
         /**
          * Add event listeners for clicking start buttons.
         */
@@ -169,7 +170,7 @@
                 //document.body.requestFullscreen();;
                 //metadata dictionary
                 var data = {};
-                for (i = 0; i < 18; i++){
+                for (i = 0; i < inputRows; i++){
                     let keyStr = "key" + i;
                     let valStr = "value" + i;
                     let key = document.getElementById(keyStr).value;
@@ -198,12 +199,14 @@
         
         })();
 
+        
         // form set up
         //reads in metadata and prefills it in the metadata inputs
         var intakeData = {{ metadata|tojson }};
         var configData = JSON.parse(intakeData);
         function inputs_setup(inputCount){
 
+            inputRows = inputCount;
             var x ="";
             for (let h=0; h<inputCount; h++){
             x = x + `<div id="row"><input type='text' id='key${h}' placeholder='N/A' >`;
@@ -238,11 +241,13 @@
 
         })();
 
-    
-
         //updates the progress as the experiment is completed
         socket.on('condition-update', function(progress){
             document.getElementById('status').innerText = progress;
+            if (progress == 'Completed'){
+                document.getElementById('stop').style.visibility = 'hidden';
+                document.getElementById('restart').style.visibility = 'visible';
+            }
         })
 
     </script>
