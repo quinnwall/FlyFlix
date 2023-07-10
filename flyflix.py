@@ -35,7 +35,7 @@ SWEEPCOUNTERREACHED = False
 RUN_FICTRAC = False
 
 
-Payload.max_decode_packets = 2000
+Payload.max_decode_packets = 2500
 
 # metadata variable - DO NOT CHANGE
 # use control panel to update values or defaultsconfig.yaml to set defaults
@@ -251,6 +251,13 @@ def trigger_start(empty):
 def trigger_restart(empty):
     socketio.emit('restart-triggered', empty)
     socketio.emit('condition-update', "Once the experiment is started, status will be shown here.")
+    
+
+@socketio.on('manual-restart')
+def manual_restart(empty):
+    print('manually restarted - recieved')
+    socketio.emit('condition-update', "Once the experiment is started, status will be shown here.")
+
 
 
 def log_fictrac_timestamp():

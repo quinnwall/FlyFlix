@@ -161,23 +161,31 @@
             }
         });
 
+
+        /**
+         * Reads values in the input boxes and returns a dictionary of them
+        */
+        function readInputData(){
+            let inputData = {};
+            for (i = 0; i < inputRows; i++){
+                let keyStr = "key" + i;
+                let valStr = "value" + i;
+                let key = document.getElementById(keyStr).value;
+                if ( key != ""){
+                    inputData[key] = document.getElementById(valStr).value;
+                }
+            }
+            return inputData;
+        }
+
+
         /**
          * Add event listeners for clicking start buttons.
         */
         (function () {
 
             document.getElementById('start').addEventListener('click', function () {
-                //document.body.requestFullscreen();;
-                //metadata dictionary
-                var data = {};
-                for (i = 0; i < inputRows; i++){
-                    let keyStr = "key" + i;
-                    let valStr = "value" + i;
-                    let key = document.getElementById(keyStr).value;
-                    if ( key != ""){
-                        data[key] = document.getElementById(valStr).value;
-                    }
-                }
+                let data = readInputData();
                 socket.emit('metadata-submit', data);
                 socket.emit('start-pressed', {});
                 document.getElementById('start').style.visibility = 'hidden';
@@ -248,7 +256,18 @@
                 document.getElementById('stop').style.visibility = 'hidden';
                 document.getElementById('restart').style.visibility = 'visible';
             }
+            else if (progress == "Once the experiment is started, status will be shown here."){
+                document.getElementById('restart').style.visibility = 'hidden';
+                document.getElementById('start').style.visibility = 'visible';
+            }
+            else if (progress.includes("condition 1") && !progress.includes("Stopped")){
+                let data = readInputData();
+                socket.emit('metadata-submit', data);
+                document.getElementById('start').style.visibility = 'hidden';
+                document.getElementById('stop').style.visibility = 'visible';
+            }
         })
+
 
     </script>
 </body>
