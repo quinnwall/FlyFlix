@@ -212,7 +212,7 @@
         //reads in metadata and prefills it in the metadata inputs
         var intakeData = {{ metadata|tojson }};
         var configData = JSON.parse(intakeData);
-        function inputs_setup(inputCount){
+        function inputSetup(inputCount){
 
             inputRows = inputCount;
             var x ="";
@@ -224,7 +224,7 @@
 
 
         }
-        inputs_setup(Object.keys(configData).length + 5);
+        inputSetup(Object.keys(configData).length + 20);
         
         (function () {
             let count = 0;
