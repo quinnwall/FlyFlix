@@ -145,6 +145,7 @@
         var socket = io();
         let screenOn = true;
 
+        // number of rows in the form
         let inputRows = 0;
 
         socket.on('connect', function(){});
@@ -225,8 +226,13 @@
 
 
         }
-        inputSetup(Object.keys(configData).length + 20);
+        inputSetup(Object.keys(configData).length + 5);
         
+
+        /**
+        * fills in the inputs with the defaults from configData
+        * adds listeners to each input to make them red when empty and white when filled in
+        */
         (function () {
             let count = 0;
             for (let k in configData){
