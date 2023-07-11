@@ -196,6 +196,7 @@
                 socket.emit('stop-pressed', {});
                 document.getElementById('stop').style.visibility = 'hidden';
                 document.getElementById('restart').style.visibility = 'visible';
+                document.getElementById('status').innerText = "Stopped at " + document.getElementById('status').innerText;
             });
 
             document.getElementById('restart').addEventListener('click', function () {

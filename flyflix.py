@@ -384,7 +384,6 @@ def cshlfly22():
             current_trial.set_id(counter)
             current_trial.trigger(socketio)
             if not start:
-                socketio.emit("condition-update", f"Stopped at condition {counter} of {len(block*repetitions)}")
                 return
 
     RUN_FICTRAC = False
