@@ -250,6 +250,11 @@ def trigger_start(empty):
 def trigger_restart(empty):
     socketio.emit('restart-triggered', empty)
 
+@socketio.on('manual-restart')
+def manual_restart(empty):
+    print('manually restarted - recieved')
+    socketio.emit('condition-update', "Once the experiment is started, status will be shown here.")
+
 
 @app.route('/demo-sounds/')
 def hello_world():
@@ -428,11 +433,13 @@ def localexperiment():
         block = random.sample(block, k=len(block))
         for current_trial in block:
             counter = counter + 1
-            progress = f"Condition {counter} of {len(block*repetitions)}"
+            progress = f"condition {counter} of {len(block*repetitions)}"
             print(progress)
             socketio.emit("condition-update", progress)
             current_trial.set_id(counter)
             current_trial.trigger(socketio)
+            if not start:
+                return
     socketio.emit("condition-update", "Completed")
     print(time.strftime("%H:%M:%S", time.localtime()))
 
@@ -520,7 +527,7 @@ def l4l5left():
         block = random.sample(block, k=len(block))
         for current_trial in block:
             counter = counter + 1
-            progress = f"Condition {counter} of {len(block*repetitions)}"
+            progress = f"condition {counter} of {len(block*repetitions)}"
             print(progress)
             socketio.emit("condition-update", progress)
             current_trial.set_id(counter)
