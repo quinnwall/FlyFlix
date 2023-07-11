@@ -89,7 +89,10 @@ def data_as_string(dictionary):
         val = dictionary[key]
         key_type = type(key)
         val_type = type(dictionary[key])
-        if (val_type == datetime.date or val_type == datetime.datetime or val_type == datetime.time):
+        if (val_type == datetime.time):
+            val = "test"
+            dictionary[key] = val
+        if (val_type == datetime.date or val_type == datetime.datetime ):
             val = val.isoformat()
             dictionary[key] = val
         elif (val == None):
@@ -113,6 +116,7 @@ def before_first_request():
     Server initiator: check for paths  and initialize logger.
     """
     app.config.update(
+        
         FICTRAC_HOST = '127.0.0.1',
         FICTRAC_PORT = 1717
     )
