@@ -16,10 +16,6 @@ The `arena.js` class defines the environment that the experiment takes place in.
 
 The Trial class is used to define each trial in an experiment. A trial consists of an open loop and closed loop condition. The trial class is compatable with all types of stimulus, however each type has its own parameters to trigger it's use. It also creates the spatial-temporal descriptions of each trial that are used to create the open and closed loop conditions. When a trial is triggered through `trigger()`, it starts the trial through calling methods in `open_loop_condition.py` and `closed_loop_condition.py`. For more information, look at the documentation within `trial.py`.
 
-### arena.js
-
-The Arena class creates all necessary components for the animation of the stimulus through [three.js](https://threejs.org/). This includes the `camera`, `scene`, `renderer`, `loop`, `DataExchanger`, and `panels` classes. Any new stimulus will need to be added to this class in order for it to be used.
-
 ### data_exchanger.js
 
 The data exchanger class handles communication between the spatial temporal classes (like `spatial_temporal.py` or `starfield_spatial_temporal.py` in the starfield branch) and the stimulus classes (like `panels.js` or `starfield.js`) through [Flask-SocketIO](https://pypi.org/project/Flask-SocketIO/) events. The `DataExchanger` waits for events (that were emitted by the spatial temporal class) and then calls stimulus methods accordingly. For example, the event `spatial-setup` or `panels-spatial-setup` results in `panels.changePanels(barWidth, spaceWidth, fgColor, bgColor, barHeight)` being called. Here is an example of one of these event handlers for setting the speed of panels for a vertical bar trial:
