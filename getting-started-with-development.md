@@ -42,11 +42,119 @@ The data exchanger class handles communication between the spatial temporal clas
 
 ### Implementing Existing Stimulus / Creating New Experiments
 
-Implementing existing stimulus in FlyFlix is simpler than creating new stimulus. The only file that you will need to edit is `flyflix.py`.
+Implementing existing stimulus in FlyFlix is simpler than creating new stimulus. The only file that you will need to edit is `flyflix.py` and you will create 2 new files.
 
 In order to implement existing stimulus, follow these steps:
 
-1. 
+1. Create a new javascript file in the static folder that creates the arena as well as the experiment buttons. The following code can be used as a template and does not require any changes:
+
+```sh
+
+import { Arena } from './arena/arena.js';
+
+import { FullScreener } from './arena/systems/full_screener.js';
+import { ExperimentControl } from './arena/systems/experiment_control.js';
+
+/**
+ * Create the experiment in the client, inside the HTML-ID `scene-container`.
+ */
+
+var socket = io();
+
+
+function main() {
+    const container = document.querySelector('#scene-container');
+  
+    const arena = new Arena(container, 310);
+
+    const fullScreenButton = new FullScreener(container);
+    const experimentController = new ExperimentControl(container, socket);
+    
+    arena.start();
+
+    socket.on('stop-triggered', function(empty){
+      arena.stop();
+    })
+}
+
+main();
+
+```
+2. Create a new html file in templates that uses the previously created file for the script. The following is a template for this file:
+
+```sh
+<!DOCTYPE html>
+<html>
+  <head>
+    {# example-template.html #}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <title>FlyFlix | Three.JS Scene Container</title>
+    <link href="/static/style/bars.css" rel="stylesheet" type="text/css">
+    <script src="/static/vendor/socket.io.min.js"></script>
+    <script type="module" src="/static/example_static_file.js"></script>
+  </head>
+  <body>
+    <div id="scene-container"></div>
+  </body>
+</html>
+```
+
+3. Create a new page in `flyflix.py` that returns the template file and starts a background task which is a function in `flyflix.py`. An example on how to do this is:
+
+```sh
+@app.route('/example-experiment/')
+def local_example_experiment():
+    """
+    An example experiment
+    """
+    _ = socketio.start_background_task(target=example_experiment)
+    return render_template('example-template.html')
+```
+
+4. Create the function that was set as the background task for the experiment. All trials will be created and triggered in this function. To create trials, look at the documentation within `trial.py` to determine what variables need to be set for the type of stimulus you are using. There are more options for stimulus and better documentation within the starfield branch. Follow the following format for the function:
+
+```sh
+def example_experiment():
+    print(time.strftime("%H:%M:%S", time.localtime()))
+    block = []
+    counter = 0
+
+    ## create trials, usually this is done using for loops with different variables
+    trial = Trial(
+        #enter parameters here    
+    )
+    block.append(trial)
+    counter += 1
+
+    while not start:
+        time.sleep(0.1)
+    global RUN_FICTRAC
+    RUN_FICTRAC = True
+    log_metadata()
+    _ = socketio.start_background_task(target = log_fictrac_timestamp)
+
+    repetitions = 3
+    counter = 0
+    opening_black_screen = Duration(100)
+    opening_black_screen.trigger_delay(socketio)
+    for i in range(repetitions):
+        socketio.emit("meta", (time.time_ns(), "block-repetition", i))
+        block = random.sample(block, k=len(block))
+        for current_trial in block:
+            counter = counter + 1
+            progress = f"Condition {counter} of {len(block*repetitions)}"
+            print(progress)
+            socketio.emit("condition-update", progress)
+            current_trial.set_id(counter)
+            current_trial.trigger(socketio)
+            if not start:
+                return
+
+    RUN_FICTRAC = False
+    socketio.emit("condition-update", "Completed")
+    print(time.strftime("%H:%M:%S", time.localtime()))
+```
 
 ### Implementing New Stimulus
 
@@ -59,5 +167,7 @@ In order to implement new stimulus, follow these steps:
 3. Update the Trial class (`trial.py`). First, add new parameters that will be needed to initialize the 2 classes you created previously. Second, if the Trial class is created with those parameters, create a spatial temporal object with those parameters. This will then be used to create `open_loop_condition.py` and `closed_loop_condition.py`. These classes may need altered based on the needs of your stimulus (closed loop almost definetely will need updated). These conditions should then be added to `self.conditions` which is iterated through in the `trigger()` method.
 
 4. Update the `arena.js` class to import and initialize your stimulus class, add it to the scene, add it to `loop.updateables`, set `loggable` to `io`, and add it to the `DataExchanger` constructor.
+
+5. From there, follow instructions in the Implementing Existing Stimulus Guide to add it in an experiment.
 
 Additional information: In most branches of FlyFlix, vertical bars/panels are the only type of stimulus. Currently, only the starfield branch implements a second type. It may be helpful to work extending off of the starfield branch when implementing more stimulus for additional documentation and comparison.
