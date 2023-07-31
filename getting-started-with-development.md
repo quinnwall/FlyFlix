@@ -34,6 +34,10 @@ The data exchanger class handles communication between the spatial temporal clas
  });
 ``` 
 
+### control-panel.html
+
+This is the template file for the control panel. The control panel serves as a remote operating system that can start/stop experiments, update trial data, and give the user status updates about the experiment. It uses socket to communicate with `flyflix.py` for all of these features.
+
 ## How to guides
 
 ### Implementing Existing Stimulus / Creating New Experiments
