@@ -8,7 +8,7 @@ The vertical bar or panel stimulus is the first type of stimulus in FlyFlix. It 
 
 ![Photo of vertical bar stimulus](vertical-bars.png)
 
-[Video of vertical bar stimulus](<../../../Downloads/screen-capture (21) (1).webm>)
+[Video of vertical bar stimulus](https://drive.google.com/file/d/1iTZ0GS-XrffRtWAVukqsXhvVacvsWQXm/view?usp=sharing)
 
 ### Starfield / Spheres
 
