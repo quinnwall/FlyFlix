@@ -322,7 +322,7 @@ def proto_optomotor_4dir():
                     for clrs in [(0, 255)]:
                         bright = clrs[1]
                         contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                        fg_color = clrs[1] << 8
+                        fg_color = [clrs[1] << 8]
                         bg_color = clrs[0] << 8
                         rotation_speed = alpha*2*speed*direction
                         trial = Trial(
@@ -378,7 +378,7 @@ def proto_grating():
                     for direction in [-1, 1]:
                         bright = clrs[1]
                         contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                        fg_color = clrs[1] << colorshift
+                        fg_color = [clrs[1] << colorshift]
                         bg_color = clrs[0] << colorshift
                         rotation_speed = alpha*2*speed*direction
                         trial = Trial(
@@ -434,7 +434,7 @@ def proto_smallfield():
                     for clrs in [(255, 0)]:
                         bright = clrs[1]
                         contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                        fg_color = clrs[1] << 8
+                        fg_color = [clrs[1] << 8]
                         bg_color = clrs[0] << 8
                         rotation_speed = alpha*2*speed*direction
                         trial = Trial(
@@ -458,7 +458,7 @@ def proto_smallfield():
                     for direction in [-1, 1]:
                         bright = clrs[1]
                         contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                        fg_color = clrs[1] << 8
+                        fg_color = [clrs[1] << 8]
                         bg_color = clrs[0] << 8
                         rotation_speed = alpha*2*speed*direction
                         trial = Trial(
@@ -514,7 +514,7 @@ def proto_cshlfly22():
                 for clrs in [(64, 190)]:
                     bright = clrs[1]
                     contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                    fg_color = clrs[1] << 8
+                    fg_color = [clrs[1] << 8]
                     bg_color = clrs[0] << 8
                     rotation_speed = alpha*2*speed*direction
                     trial = Trial(
@@ -534,7 +534,7 @@ def proto_cshlfly22():
                 for clrs in [(190, 64)]:
                     bright = clrs[1]
                     contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                    fg_color = clrs[1] << 8
+                    fg_color = [clrs[1] << 8]
                     bg_color = clrs[0] << 8
                     trial = Trial(
                         counter,
@@ -556,7 +556,7 @@ def proto_cshlfly22():
                 for clrs in [(190, 64)]:
                     bright = clrs[1]
                     contrast = round((clrs[1]-clrs[0])/(clrs[1]+clrs[0]), 1)
-                    fg_color = clrs[1] << 8
+                    fg_color = [clrs[1] << 8]
                     bg_color = clrs[0] << 8
                     rotation_speed = alpha*2*speed*direction
                     trial = Trial(
