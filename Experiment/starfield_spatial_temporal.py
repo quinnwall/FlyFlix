@@ -41,7 +41,7 @@ class StarfieldSpatialTemporal():
         
         if shell_radius>1000:
             warnings.warn("Shell radius is too large and will not display. Set to a size less than or equal to 1000")
-        if fg_color == bg_color:
+        if fg_color[0] == bg_color:
             warnings.warn("Background and foreground colors are the same.")
         
         
