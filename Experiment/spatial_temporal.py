@@ -42,7 +42,7 @@ class SpatialTemporal():
             warnings.warn("temporal components needs to be set.")
         if start_mask_deg > end_mask_deg:
             warnings.warn("mask has invalid range.")
-        if fg_color<0 or fg_color>0xffffff:
+        if fg_color[0]<0 or fg_color[0]>0xffffff:
             warnings.warn("foreground color outside of range")
         if bg_color<0 or bg_color>0xffffff:
             warnings.warn("background color outside of range")
